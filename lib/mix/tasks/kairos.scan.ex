@@ -31,5 +31,5 @@ defmodule Mix.Tasks.Kairos.Scan do
 
   defp format(finding),
     do:
-      "#{finding.severity} #{finding.cause} #{finding.service}.#{finding.field}: declared=#{inspect(finding.declared)} actual=#{inspect(finding.actual)}"
+      "#{finding.cause} #{finding.service}.#{finding.field}: declared=#{inspect(finding.declared)} actual=#{inspect(finding.actual)}"
 end

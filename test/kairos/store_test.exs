@@ -13,7 +13,6 @@ defmodule Kairos.StoreTest do
       cause: "in_place_mutation",
       field: "memory",
       category: "resource",
-      severity: "medium",
       declared: 1,
       actual: 2
     }

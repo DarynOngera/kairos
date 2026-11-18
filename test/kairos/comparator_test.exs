@@ -40,7 +40,7 @@ defmodule Kairos.ComparatorTest do
   end
 
   test "reports missing services" do
-    assert [%{cause: "missing", severity: "high"}] = Comparator.compare(declared(), nil)
+    assert [%{cause: "missing"}] = Comparator.compare(declared(), nil)
   end
 
   test "reports a lookalike container as out of band" do
@@ -65,7 +65,7 @@ defmodule Kairos.ComparatorTest do
   test "reports immutable changes as unexplained" do
     changed = actual(%{"HostConfig" => %{"Privileged" => true}})
 
-    assert [%{cause: "unexplained", field: "privileged", severity: "high"}] =
+    assert [%{cause: "unexplained", field: "privileged"}] =
              Comparator.compare(declared(), changed, expected_hash: "hash")
   end
 
@@ -90,7 +90,7 @@ defmodule Kairos.ComparatorTest do
       "NetworkSettings" => %{"Networks" => %{"demo_default" => %{}}}
     }
 
-    assert [%{cause: "unmanaged_container", severity: "high"}] =
+    assert [%{cause: "unmanaged_container"}] =
              Comparator.unmanaged([container], ["demo_default"])
   end
 

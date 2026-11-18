@@ -7,7 +7,7 @@ defmodule Kairos.Comparator do
   def compare(declared, actual, opts \\ [])
 
   def compare(declared, nil, _opts),
-    do: [finding(declared.service, "missing", "container", nil, nil, "lifecycle", "high")]
+    do: [finding(declared.service, "missing", "container", nil, nil, "lifecycle")]
 
   def compare(declared, actual, opts) do
     labels = actual.labels || %{}
@@ -21,8 +21,7 @@ defmodule Kairos.Comparator do
             "container",
             declared.service,
             actual.id,
-            "security",
-            "high"
+            "security"
           )
         ]
 
@@ -35,8 +34,7 @@ defmodule Kairos.Comparator do
             "config_hash",
             Keyword.get(opts, :expected_hash),
             labels["com.docker.compose.config-hash"],
-            "lifecycle",
-            "medium"
+            "lifecycle"
           )
         ] ++ image_findings(declared, actual, opts)
 
@@ -62,8 +60,7 @@ defmodule Kairos.Comparator do
             "container",
             project_networks,
             Map.get(container, "Id"),
-            "security",
-            "high"
+            "security"
           )
         ]
       else
@@ -91,8 +88,7 @@ defmodule Kairos.Comparator do
             field,
             expected,
             actual_value,
-            rule.category,
-            rule.severity
+            rule.category
           )
         ]
       else
@@ -111,8 +107,7 @@ defmodule Kairos.Comparator do
             "image",
             declared_id,
             actual.image_id,
-            "image",
-            "medium"
+            "image"
           )
         ]
 
@@ -136,14 +131,13 @@ defmodule Kairos.Comparator do
 
   defp non_default?(_expected, _actual), do: false
 
-  defp finding(service, cause, field, declared, actual, category, severity),
+  defp finding(service, cause, field, declared, actual, category),
     do: %{
       service: service,
       cause: cause,
       field: field,
       declared: declared,
       actual: actual,
-      category: category,
-      severity: severity
+      category: category
     }
 end

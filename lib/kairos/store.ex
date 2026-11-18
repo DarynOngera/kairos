@@ -15,7 +15,7 @@ defmodule Kairos.Store do
     CREATE TABLE IF NOT EXISTS findings (
       id INTEGER PRIMARY KEY, snapshot_id INTEGER NOT NULL, fingerprint TEXT NOT NULL,
       service TEXT NOT NULL, cause TEXT NOT NULL, field TEXT NOT NULL,
-      category TEXT NOT NULL, severity TEXT NOT NULL, declared TEXT, actual TEXT,
+      category TEXT NOT NULL, declared TEXT, actual TEXT,
       FOREIGN KEY(snapshot_id) REFERENCES snapshots(id)
     )
     """,
@@ -49,7 +49,7 @@ defmodule Kairos.Store do
          {:ok, result} <-
            Ecto.Adapters.SQL.query(
              Repo,
-             "SELECT f.id, f.service, f.cause, f.field, f.category, f.severity, s.first_seen, s.last_seen, s.status FROM findings f JOIN finding_state s ON f.fingerprint = s.fingerprint GROUP BY f.fingerprint ORDER BY s.last_seen DESC",
+             "SELECT f.id, f.service, f.cause, f.field, f.category, s.first_seen, s.last_seen, s.status FROM findings f JOIN finding_state s ON f.fingerprint = s.fingerprint GROUP BY f.fingerprint ORDER BY s.last_seen DESC",
              []
            ) do
       {:ok, rows(result)}
@@ -123,7 +123,7 @@ defmodule Kairos.Store do
          {:ok, %{rows: [row]}} <-
            Ecto.Adapters.SQL.query(
              Repo,
-             "SELECT id, service, cause, field, category, severity, declared, actual FROM findings WHERE id = ?",
+             "SELECT id, service, cause, field, category, declared, actual FROM findings WHERE id = ?",
              [id]
            ) do
       {:ok,
@@ -136,9 +136,8 @@ defmodule Kairos.Store do
            cause: elem(tuple, 2),
            field: elem(tuple, 3),
            category: elem(tuple, 4),
-           severity: elem(tuple, 5),
-           declared: elem(tuple, 6),
-           actual: elem(tuple, 7)
+           declared: elem(tuple, 5),
+           actual: elem(tuple, 6)
          }
        end)}
     else
@@ -155,7 +154,16 @@ defmodule Kairos.Store do
          {:ok, _key} <- fingerprint_key(dir),
          :ok <- start_repo(db) do
       Enum.each(@schema, &Ecto.Adapters.SQL.query!(Repo, &1, []))
+      remove_legacy_severity_column()
       :ok
+    end
+  end
+
+  defp remove_legacy_severity_column do
+    columns = Ecto.Adapters.SQL.query!(Repo, "PRAGMA table_info(findings)", []).rows
+
+    if Enum.any?(columns, fn row -> Enum.at(row, 1) == "severity" end) do
+      Ecto.Adapters.SQL.query!(Repo, "ALTER TABLE findings DROP COLUMN severity", [])
     end
   end
 
@@ -224,7 +232,7 @@ defmodule Kairos.Store do
 
       Ecto.Adapters.SQL.query!(
         Repo,
-        "INSERT INTO findings (snapshot_id, fingerprint, service, cause, field, category, severity, declared, actual) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
+        "INSERT INTO findings (snapshot_id, fingerprint, service, cause, field, category, declared, actual) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
         [
           snapshot_id,
           fingerprint,
@@ -232,7 +240,6 @@ defmodule Kairos.Store do
           finding.cause,
           finding.field,
           finding.category,
-          finding.severity,
           canonical_json(finding.declared),
           canonical_json(finding.actual)
         ]
@@ -263,7 +270,7 @@ defmodule Kairos.Store do
 
   defp finding_fingerprint(finding) do
     finding
-    |> Map.take([:service, :cause, :field, :category, :severity, :declared, :actual])
+    |> Map.take([:service, :cause, :field, :category, :declared, :actual])
     |> canonical_json()
     |> then(&:crypto.hash(:sha256, &1))
     |> Base.encode16(case: :lower)

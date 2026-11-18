@@ -74,6 +74,8 @@ HMAC-fingerprinted before comparison, output, or storage.
 
 Possible causes are `missing`, `out_of_band`, `stale_deployment`,
 `in_place_mutation`, `unexplained`, `image_drift`, and `unmanaged_container`.
+Kairos does not assign severity or priority; people and their organization make
+that decision after reviewing the evidence.
 
 ## History, events, and investigation
 

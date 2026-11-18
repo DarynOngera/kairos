@@ -10,7 +10,7 @@ defmodule Mix.Tasks.Kairos.Explain do
         rule = Kairos.Rules.fetch(finding.field)
 
         Mix.shell().info(
-          "#{finding.severity} #{finding.cause} #{finding.service}.#{finding.field}\n#{rule.rationale}\nDeclared: #{finding.declared}\nActual: #{finding.actual}\nAttribution unavailable unless correlated with external host or CI audit logs."
+          "#{finding.cause} #{finding.service}.#{finding.field}\n#{rule.rationale}\nDeclared: #{finding.declared}\nActual: #{finding.actual}\nAttribution unavailable unless correlated with external host or CI audit logs."
         )
 
       {:error, reason} ->

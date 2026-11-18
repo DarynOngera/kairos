@@ -66,8 +66,7 @@ defmodule Kairos.Scanner do
               field: "container",
               declared: nil,
               actual: inspect(reason),
-              category: "lifecycle",
-              severity: "high"
+              category: "lifecycle"
             }
           ]
         }

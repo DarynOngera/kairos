@@ -1,0 +1,12 @@
+# Local runtime state and emitted pipeline evidence
+/data/
+/artifacts/
+*.db
+*.db-*
+
+# Working notes are retained locally; publish operator material separately.
+/docs/
+
+# Elixir build output and dependencies
+/_build/
+/deps/

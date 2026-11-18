@@ -1,0 +1,25 @@
+name: kairos_m0
+
+services:
+  web:
+    build: .
+    image: kairos-fixture:local
+    read_only: true
+    cap_drop:
+      - ALL
+    ports:
+      - "${KAIROS_FIXTURE_PORT:-18080}:80"
+    environment:
+      KAIROS_FIXTURE_SECRET: fixture-secret-value
+    mem_limit: 128m
+    restart: unless-stopped
+  worker:
+    build: .
+    image: kairos-fixture:local
+    read_only: true
+    cap_drop:
+      - ALL
+    environment:
+      KAIROS_FIXTURE_SECRET: fixture-secret-value
+    mem_limit: 64m
+    restart: "no"

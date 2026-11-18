@@ -1,0 +1,5 @@
+{
+  "declared_image_id": "sha256:declared-image",
+  "aligned_actual_image_id": "sha256:declared-image",
+  "drifted_actual_image_id": "sha256:replacement-image"
+}

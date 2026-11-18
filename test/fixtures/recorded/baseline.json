@@ -1,0 +1,30 @@
+{
+  "service": "web",
+  "compose": {
+    "read_only": true,
+    "cap_drop": ["ALL"],
+    "ports": [{"target": 80, "published": 18080, "protocol": "tcp"}],
+    "networks": {"default": null},
+    "mem_limit": "128m",
+    "restart": "unless-stopped"
+  },
+  "inspect": {
+    "Id": "recorded-web-id",
+    "Image": "sha256:recorded-image",
+    "Config": {
+      "Labels": {
+        "com.docker.compose.project": "kairos_m0",
+        "com.docker.compose.service": "web",
+        "com.docker.compose.config-hash": "a10582a62304807d45b48df06ab84d35b48f034d78cd7396f12969c3fd5a1a36"
+      }
+    },
+    "HostConfig": {
+      "ReadonlyRootfs": true,
+      "CapDrop": ["ALL"],
+      "PortBindings": {"80/tcp": [{"HostIp": "", "HostPort": "18080"}]},
+      "Memory": 134217728,
+      "RestartPolicy": {"Name": "unless-stopped", "MaximumRetryCount": 0}
+    },
+    "NetworkSettings": {"Networks": {"kairos_m0_default": {}}}
+  }
+}
